@@ -58,6 +58,6 @@ def ecb_aes(text, key, blocksize=BLOCKSIZE):
     blocks = [text[i*blocksize:(i+1)*blocksize] for i in range(len(text)/blocksize)]
     cleared_blocks = []
     for block in blocks:
-        cleared_block = aes_obj.decrypt(block)
+        cleared_block = aes_obj.encrypt(block)
         cleared_blocks.append(cleared_block)
     return ''.join(cleared_blocks)
