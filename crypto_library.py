@@ -48,7 +48,7 @@ def cbc_aes_decrypt(ciphertext, iv, key, blocksize=BLOCKSIZE):
         plain_blocks.append(plain_block)
 
         xor_block = cipher_block
-    return ''.join(plain_blocks)
+    return remove_pkcs_7_padding(''.join(plain_blocks))
 
 
 def ecb_aes(text, key, blocksize=BLOCKSIZE):
