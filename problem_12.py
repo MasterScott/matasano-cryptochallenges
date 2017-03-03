@@ -1,4 +1,4 @@
-from crypto_library import ecb_aes
+from crypto_library import ecb_aes_encrypt
 from problem_11 import distinguish_encryption_mode
 from string import printable
 '''
@@ -12,7 +12,7 @@ ENCRYPTION_KEY = ''.join(random.choice(printable) for _ in range(BLOCKSIZE))
 def new_encryption_oracle(adversary_input):
     ENCRYPTION_KEY = ',y!3<CWn@1?wwF]\x0b'
     unknown_input = 'Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK'
-    return ecb_aes(adversary_input+unknown_input, ENCRYPTION_KEY)
+    return ecb_aes_encrypt(adversary_input+unknown_input, ENCRYPTION_KEY)
 
 
 def find_blocksize(oracle):

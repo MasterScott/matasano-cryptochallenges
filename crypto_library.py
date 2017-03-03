@@ -51,7 +51,7 @@ def cbc_aes_decrypt(ciphertext, iv, key, blocksize=BLOCKSIZE):
     return remove_pkcs_7_padding(''.join(plain_blocks))
 
 
-def ecb_aes(text, key, blocksize=BLOCKSIZE):
+def ecb_aes_encrypt(text, key, blocksize=BLOCKSIZE):
     aes_obj = AES.new(key)
 
     text = apply_pkcs_7_padding(text, blocksize)
@@ -61,3 +61,9 @@ def ecb_aes(text, key, blocksize=BLOCKSIZE):
         cleared_block = aes_obj.encrypt(block)
         cleared_blocks.append(cleared_block)
     return ''.join(cleared_blocks)
+
+
+def ecb_aes_decrypt(ciphertext, key, blocksize=BLOCKSIZE):
+    aes_obj = AES.new(key)
+    plaintext = aes_obj.decrypt(ciphertext)
+    return remove_pkcs_7_padding(plaintext)

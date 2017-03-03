@@ -1,4 +1,4 @@
-from crypto_library import cbc_aes_encrypt, ecb_aes, BLOCKSIZE
+from crypto_library import cbc_aes_encrypt, ecb_aes_encrypt, BLOCKSIZE
 from string import printable
 import random
 
@@ -13,7 +13,7 @@ def cbc_encryption(plaintext, key):
 
 
 def ecb_encryption(plaintext, key):
-    return ecb_aes(plaintext, key)
+    return ecb_aes_encrypt(plaintext, key)
 
 
 def encryption_oracle(plaintext):
