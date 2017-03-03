@@ -9,6 +9,14 @@ def apply_pkcs_7_padding(plaintext, blocksize=BLOCKSIZE):
     return ''.join((plaintext, pad*padding_length))
 
 
+def remove_pkcs_7_padding(plaintext):
+    possible_padding_size = ord(plaintext[-1])
+    possible_padding = plaintext[-1*possible_padding_size:]
+    if len(set(possible_padding)) == 1 and len(possible_padding) == ord(possible_padding[0]):
+        return plaintext[:-1*possible_padding_size]
+    return plaintext
+
+
 def cbc_aes_encrypt(plaintext, iv, key, blocksize=BLOCKSIZE):
     aes_obj = AES.new(key)
 
