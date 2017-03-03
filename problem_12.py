@@ -15,13 +15,13 @@ def new_encryption_oracle(adversary_input):
     return ecb_aes(adversary_input+unknown_input, ENCRYPTION_KEY)
 
 
-def find_blocksize():
+def find_blocksize(oracle):
     adversary_input = ''
-    previous_length = len(new_encryption_oracle(adversary_input))
+    previous_length = len(oracle(adversary_input))
     found_block_change = False
     while True:
         adversary_input += '0'
-        current_length = len(new_encryption_oracle(adversary_input))
+        current_length = len(oracle(adversary_input))
         if current_length > previous_length:
             if found_block_change:
                 return current_length - previous_length
@@ -58,7 +58,7 @@ def find_single_ecb_character(blocksize, decrypted, unknown_text_length):
 
 
 if __name__ == '__main__':
-    blocksize = find_blocksize()
+    blocksize = find_blocksize(new_encryption_oracle)
     unknown_text_length = find_unknown_text_length(blocksize)
 
     chosen_input = '0'*(3*blocksize)
