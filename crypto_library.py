@@ -1,6 +1,12 @@
 from Crypto.Cipher import AES
+from string import printable
 
 BLOCKSIZE = 16
+
+
+class InvalidPaddingError(Exception):
+    '''Custom exception to handle cases of invalid PKCS#7 padding.'''
+    pass
 
 
 def apply_pkcs_7_padding(plaintext, blocksize=BLOCKSIZE):
@@ -10,11 +16,11 @@ def apply_pkcs_7_padding(plaintext, blocksize=BLOCKSIZE):
 
 
 def remove_pkcs_7_padding(plaintext):
-    possible_padding_size = ord(plaintext[-1])
-    possible_padding = plaintext[-1*possible_padding_size:]
-    if len(set(possible_padding)) == 1 and len(possible_padding) == ord(possible_padding[0]):
-        return plaintext[:-1*possible_padding_size]
-    return plaintext
+    if plaintext[-1] not in printable:
+        padding_start = plaintext.find(plaintext[-1])
+        if len(plaintext[padding_start:]) != ord(plaintext[-1]):
+            raise InvalidPaddingError('Invalid PKCS#7 padding')
+        return plaintext[:padding_start]
 
 
 def cbc_aes_encrypt(plaintext, iv, key, blocksize=BLOCKSIZE):
