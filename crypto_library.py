@@ -1,5 +1,4 @@
 from Crypto.Cipher import AES
-from string import printable
 
 BLOCKSIZE = 16
 
@@ -16,11 +15,10 @@ def apply_pkcs_7_padding(plaintext, blocksize=BLOCKSIZE):
 
 
 def remove_pkcs_7_padding(plaintext):
-    if plaintext[-1] not in printable:
-        padding_start = plaintext.find(plaintext[-1])
-        if len(plaintext[padding_start:]) != ord(plaintext[-1]):
-            raise InvalidPaddingError('Invalid PKCS#7 padding')
-        return plaintext[:padding_start]
+    pad_start = -ord(plaintext[-1])
+    if len(set(plaintext[pad_start:])) == 1:
+        return plaintext[:pad_start]
+    raise InvalidPaddingError('Invalid PKCS#7 padding')
 
 
 def cbc_aes_encrypt(plaintext, iv, key, blocksize=BLOCKSIZE):
