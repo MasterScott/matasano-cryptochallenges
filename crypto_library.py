@@ -1,4 +1,6 @@
 from Crypto.Cipher import AES
+from math import ceil
+from struct import pack
 
 BLOCKSIZE = 16
 
@@ -76,3 +78,18 @@ def ecb_aes_decrypt(ciphertext, key, blocksize=BLOCKSIZE):
     aes_obj = AES.new(key)
     plaintext = aes_obj.decrypt(ciphertext)
     return remove_pkcs_7_padding(plaintext)
+
+
+def ctr_aes(text, key, nonce, nonce_format, counter_format, blocksize=BLOCKSIZE):
+    aes_obj = AES.new(key)
+    input_block_num = int(ceil(len(text)/float(blocksize)))
+    keystream = ''
+    for counter in range(input_block_num):
+        plain_keystream_block = ''.join((
+            pack(nonce_format, nonce),
+            pack(counter_format, counter)
+        ))
+        encrypted_keystream_block = aes_obj.encrypt(plain_keystream_block)
+        keystream += encrypted_keystream_block
+    output = ''.join([chr(ord(keystream[i]) ^ ord(text[i])) for i in range(len(text))])
+    return output
