@@ -8,6 +8,10 @@ class InvalidPaddingError(Exception):
     pass
 
 
+def break_to_blocks(text, blocksize):
+    return [text[i*blocksize:(i+1)*blocksize] for i in range(len(text)/blocksize)]
+
+
 def apply_pkcs_7_padding(plaintext, blocksize=BLOCKSIZE):
     padding_length = blocksize - len(plaintext) % blocksize
     pad = chr(padding_length)
@@ -25,7 +29,7 @@ def cbc_aes_encrypt(plaintext, iv, key, blocksize=BLOCKSIZE):
     aes_obj = AES.new(key)
 
     plaintext = apply_pkcs_7_padding(plaintext, blocksize)
-    plain_blocks = [plaintext[i*blocksize:(i+1)*blocksize] for i in range(len(plaintext)/blocksize)]
+    plain_blocks = break_to_blocks(plaintext, blocksize)
     xor_block = iv
     encrypted_blocks = []
     for plain_block in plain_blocks:
@@ -42,6 +46,7 @@ def cbc_aes_decrypt(ciphertext, iv, key, blocksize=BLOCKSIZE):
     aes_obj = AES.new(key)
 
     cipher_blocks = [ciphertext[i*blocksize:(i+1)*blocksize] for i in range(len(ciphertext)/blocksize)]
+    cipher_blocks = break_to_blocks(ciphertext, blocksize)
     xor_block = iv
 
     plain_blocks = []
@@ -59,7 +64,7 @@ def ecb_aes_encrypt(text, key, blocksize=BLOCKSIZE):
     aes_obj = AES.new(key)
 
     text = apply_pkcs_7_padding(text, blocksize)
-    blocks = [text[i*blocksize:(i+1)*blocksize] for i in range(len(text)/blocksize)]
+    blocks = break_to_blocks(text, blocksize)
     cleared_blocks = []
     for block in blocks:
         cleared_block = aes_obj.encrypt(block)
